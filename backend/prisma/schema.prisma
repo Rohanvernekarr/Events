@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model College {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  emailDomain String    // e.g., "@university.edu"
+  students    Student[]
+  events      Event[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Student {
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  isVerified    Boolean        @default(false)
+  verificationToken String?
+  collegeId     String
+  college       College        @relation(fields: [collegeId], references: [id])
+  registrations Registration[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Event {
+  id                 String         @id @default(uuid())
+  title              String
+  description        String?
+  date               DateTime
+  venue              String
+  category           EventCategory
+  status             EventStatus    @default(ACTIVE)
+  maxCapacity        Int?
+  allowOtherColleges Boolean        @default(false) // Allow students from other colleges to register
+  collegeId          String
+  college            College        @relation(fields: [collegeId], references: [id])
+  registrations      Registration[]
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+}
+
+model Registration {
+  id           String      @id @default(uuid())
+  studentId    String
+  eventId      String
+  student      Student     @relation(fields: [studentId], references: [id])
+  event        Event       @relation(fields: [eventId], references: [id])
+  registeredAt DateTime    @default(now())
+  attendance   Attendance?
+  feedback     Feedback?
+
+  @@unique([studentId, eventId]) // Prevent duplicate registrations
+}
+
+model Attendance {
+  id             String       @id @default(uuid())
+  registrationId String       @unique
+  registration   Registration @relation(fields: [registrationId], references: [id])
+  checkedInAt    DateTime     @default(now())
+}
+
+model Feedback {
+  id             String       @id @default(uuid())
+  registrationId String       @unique
+  registration   Registration @relation(fields: [registrationId], references: [id])
+  rating         Int          // 1-5 scale
+  comments       String?
+  submittedAt    DateTime     @default(now())
+}
+
+enum EventCategory {
+  WORKSHOP
+  SEMINAR
+  FEST
+  HACKATHON
+  TECH_TALK
+}
+
+enum EventStatus {
+  ACTIVE
+  CANCELLED
+  COMPLETED
+}
