@@ -18,11 +18,11 @@ npm install
 
 cd backend
 npm install
-Create a `.env` file in the `backend` directory:
-DATABASE_URL="file:./dev.db"
-JWT_SECRET="your-super-secret-jwt-key-here"
-PORT=3001
-NODE_ENV=development
+-Create a `.env` file in the `backend` directory:
+-DATABASE_URL="file:./dev.db"
+-JWT_SECRET="your-super-secret-jwt-key-here"
+-PORT=3001
+-NODE_ENV=development
 
 ### Generate Prisma client
 npx prisma generate
