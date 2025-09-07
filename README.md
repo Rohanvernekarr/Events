@@ -24,18 +24,18 @@ JWT_SECRET="your-super-secret-jwt-key-here"
 PORT=3001
 NODE_ENV=development
 
-# Generate Prisma client
+### Generate Prisma client
 npx prisma generate
 
-# Run database migrations
+### Run database migrations
 npx prisma db push
 
-# Seed the database with initial data
+### Seed the database with initial data
 npx prisma db seed
 
 npm run dev
 
-## Admin Dashboard Setup
+### Admin Dashboard Setup
 
 cd campus-admin
 npm install
@@ -46,7 +46,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3001/api
 
 npm run dev
 
-## 📱 Student Mobile App Setup
+### Student Mobile App Setup
 
 cd campus-student  
 npm install
